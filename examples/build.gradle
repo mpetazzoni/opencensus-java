@@ -12,7 +12,7 @@ repositories {
 group = "io.opencensus"
 version = "0.11.0-SNAPSHOT"
 
-def opencensusVersion = "0.10.1" // LATEST_OPENCENSUS_RELEASE_VERSION
+def opencensusVersion = "0.11.0-SNAPSHOT" // LATEST_OPENCENSUS_RELEASE_VERSION
 
 checkstyle {
     configFile = file("$rootDir/../buildscripts/checkstyle.xml")
@@ -32,6 +32,7 @@ tasks.withType(JavaCompile) {
 dependencies {
     compile "io.opencensus:opencensus-api:${opencensusVersion}",
             "io.opencensus:opencensus-contrib-zpages:${opencensusVersion}",
+            "io.opencensus:opencensus-exporter-stats-signalfx:${opencensusVersion}",
             "io.opencensus:opencensus-exporter-trace-logging:${opencensusVersion}"
 
     runtime "io.opencensus:opencensus-impl:${opencensusVersion}"
@@ -45,6 +46,13 @@ startScripts.enabled = false
 task statsRunner(type: CreateStartScripts) {
     mainClassName = 'io.opencensus.examples.stats.StatsRunner'
     applicationName = 'StatsRunner'
+    outputDir = new File(project.buildDir, 'tmp')
+    classpath = jar.outputs.files + project.configurations.runtime
+}
+
+task signalFxStatsExample(type: CreateStartScripts) {
+    mainClassName = 'io.opencensus.examples.stats.SignalFxStatsExample'
+    applicationName = 'SignalFxStatsExample'
     outputDir = new File(project.buildDir, 'tmp')
     classpath = jar.outputs.files + project.configurations.runtime
 }
